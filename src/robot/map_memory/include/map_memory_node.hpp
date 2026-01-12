@@ -19,7 +19,7 @@ class MapMemoryNode : public rclcpp::Node {
     // subscriptions + publisher topics
     rclcpp::Subscription<nav_msgs::msg::OccupancyGrid>::SharedPtr costmapSub;
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odomSub;
-    rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr mapPub;
+    rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr mapPublish;
 
     // timer
     rclcpp::TimerBase::SharedPtr timer;
@@ -31,7 +31,7 @@ class MapMemoryNode : public rclcpp::Node {
     double curX;
     double curY;
     double curYaw;
-    bool havePose;
+    bool hasOdom;
     double lastUpdateX;
     double lastUpdateY;
     bool haveLastUpdate;
@@ -39,13 +39,13 @@ class MapMemoryNode : public rclcpp::Node {
     // map parameters
     double updateDistance;
 
-    int updateIntervalMs;
+    int updateTime;
 
-    double globalResolution;
-    int globalWidth;
-    int globalHeight;
-    double globalOriginX;
-    double globalOriginY;
+    double gRes;
+    int gWidth;
+    int gHeight;
+    double gOriginX;
+    double gOriginY;
 
     std::string globalFrameId;
 

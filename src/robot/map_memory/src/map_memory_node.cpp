@@ -6,7 +6,7 @@
 
 // https://docs.ros.org/en/kinetic/api/nav_msgs/html/msg/OccupancyGrid.html
 
-MapMemoryNode::MapMemoryNode() : Node("map_memory"), mapMemory(robot::MapMemoryCore(this->get_logger()))
+MapMemoryNode::MapMemoryNode() : Node("map_memory"), mapMemory(robot::MapMemoryCore())
 {
   // odometry data
   curX = 0.0;

@@ -5,10 +5,9 @@
 namespace robot
 {
 
-MapMemoryCore::MapMemoryCore(const rclcpp::Logger& logger)
+MapMemoryCore::MapMemoryCore()
 {
-  logger = logger;
-} 
+}
 
 void MapMemoryCore::initializeGlobalMap(double resolution, int cols, int rows, double originX, double originY)
 {
