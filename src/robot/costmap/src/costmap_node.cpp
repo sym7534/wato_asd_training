@@ -6,14 +6,14 @@
 #include "costmap_node.hpp"
  
 // rewrote given code to make the costmap mode publish nav_msgs
-CostmapNode::CostmapNode() : Node("costmap"), costmap_(robot::CostmapCore(this->get_logger()))
+CostmapNode::CostmapNode() : Node("costmap"), costmapCore(robot::CostmapCore(this->get_logger()))
 {
   // make the node publisher part
-  publishedCostmap_ = this->create_publisher<nav_msgs::msg::OccupancyGrid>("/costmap",10);
-  timer_ = this->create_wall_timer(std::chrono::milliseconds(500), std::bind(&CostmapNode::publishCostmap, this));
+  publishedCostmap = this->create_publisher<nav_msgs::msg::OccupancyGrid>("/costmap",10);
+  timer = this->create_wall_timer(std::chrono::milliseconds(500), std::bind(&CostmapNode::publishCostmap, this));
 
   //subscription
-  subscription_ = this->create_subscription<sensor_msgs::msg::LaserScan>("/lidar", 10, std::bind(&CostmapNode::topicCallback, this, std::placeholders::_1));
+  subscription = this->create_subscription<sensor_msgs::msg::LaserScan>("/lidar", 10, std::bind(&CostmapNode::topicCallback, this, std::placeholders::_1));
 }
 
 void CostmapNode::initializeCostmap()
@@ -57,7 +57,7 @@ void CostmapNode::publishCostmap()
     }
   }
 
-  publishedCostmap_->publish(message);
+  publishedCostmap->publish(message);
 }
  
 // topicCallback.. or whatever.. stole the name from some random guide on simple ros subscribers

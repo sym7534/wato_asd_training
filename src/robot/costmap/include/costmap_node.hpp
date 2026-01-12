@@ -18,7 +18,7 @@ class CostmapNode : public rclcpp::Node {
     double costmap[SIZE][SIZE];
 
   private:
-    robot::CostmapCore costmap_;
+    robot::CostmapCore costmapCore;
 
     double resolution = 0.1;
     double origin_x = -(SIZE * resolution) / 2.0;
@@ -27,11 +27,11 @@ class CostmapNode : public rclcpp::Node {
     double max_cost = 100.0;
 
     // Place these constructs here
-    rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr publishedCostmap_;
+    rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr publishedCostmap;
 
     // subscriber
-    rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr subscription_;
-    rclcpp::TimerBase::SharedPtr timer_;
+    rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr subscription;
+    rclcpp::TimerBase::SharedPtr timer;
     
     void initializeCostmap();
     void topicCallback(const sensor_msgs::msg::LaserScan::SharedPtr msg);
