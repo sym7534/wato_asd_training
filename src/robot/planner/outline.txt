@@ -1,0 +1,30 @@
+subscribe to:
+/map nav_msgs::msg::OccupancyGrid
+/goal_point geometry_msgs::msg::PointStamped
+/odom/filtered nav_msgs::msg::Odometry
+
+https://docs.ros.org/en/lunar/api/nav_msgs/html/msg/OccupancyGrid.html
+https://docs.ros.org/en/noetic/api/geometry_msgs/html/msg/PointStamped.html
+https://docs.ros.org/en/noetic/api/nav_msgs/html/msg/Odometry.html
+
+
+Publisher:
+/path nav_msgs::msg::Path 
+
+https://docs.ros.org/en/lunar/api/nav_msgs/html/msg/Path.html
+
+
+1 Timer that tracks when we have reached the goal, or timedout, and we need to replan
+
+double gRes = globalMap->info.resolution;
+  double gOriginX = globalMap->info.origin.position.x;
+  double gOriginY = globalMap->info.origin.position.y;
+  int gCols = globalMap->info.width;
+  int gRows = globalMap->info.height;
+
+  globalMap->data[index]
+
+  globalMap->data[gRow * gCols + gCol] = cellValue;
+
+  index is row * columns  + column 
+  for occupancy grid
