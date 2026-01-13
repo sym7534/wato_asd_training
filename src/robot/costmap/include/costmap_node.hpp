@@ -23,7 +23,7 @@ class CostmapNode : public rclcpp::Node {
     double resolution = 0.1;
     double origin_x = -(SIZE * resolution) / 2.0;
     double origin_y = -(SIZE * resolution) / 2.0;
-    double inflation_radius = 1.4;
+    double inflation_radius = 2.0;
     double max_cost = 100.0;
 
     // Place these constructs here

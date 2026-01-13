@@ -12,6 +12,7 @@
 #include <nav_msgs/msg/odometry.hpp>
 
 #include <cmath>
+#include <functional>
 
 enum class NodeState
 {
@@ -36,30 +37,24 @@ struct CellIndex
     y = 0;
   }
 
-  bool operator==(const CellIndex &otherCell)
+  bool operator==(const CellIndex &otherCell) const
   {
     return(x == otherCell.x && y == otherCell.y);
   }
 
-  bool operator!=(const CellIndex &otherCell)
+  bool operator!=(const CellIndex &otherCell) const
   {
     return (!(*this == otherCell));
   }
 };
 
-struct CompareFScore
-{
-  bool operator()(const AStarNode &x, const AStarNode &y)
-  {
-    return(x.fScore > y.fScore);
-  }
-};
+struct AStarNode;
 
 struct CellIndexHash
 {
-  std::size_t operator()(const CellIndex &index)
+  std::size_t operator()(const CellIndex &index) const
   {
-    return(std::hash<int>()(index.x)^(std::hash<int>()(index.y) <<1));
+    return(std::hash<int>()(static_cast<int>(index.x))^(std::hash<int>()(static_cast<int>(index.y)) <<1));
   }
 };
 
@@ -91,6 +86,13 @@ struct AStarNode
   }
 };
 
+struct CompareFScore
+{
+  bool operator()(const AStarNode &x, const AStarNode &y) const
+  {
+    return(x.fScore > y.fScore);
+  }
+};
 
 
 class PlannerNode : public rclcpp::Node {
@@ -98,17 +100,46 @@ class PlannerNode : public rclcpp::Node {
     PlannerNode();
 
   private:
+
+    const int mapSize = 300;
+    const int mapRes = 0.1;
+
+    // state
     NodeState state_ = NodeState::WAITING_FOR_GOAL;
+
     robot::PlannerCore planner_;
 
-    // latest goal object
+    // subscribers/publishers
+    rclcpp::Subscription<nav_msgs::msg::OccupancyGrid>::SharedPtr mapSubscription;
+    rclcpp::Subscription<geometry_msgs::msg::PointStamped>::SharedPtr goalSubscription;
+    rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odomSubscription;
+
+    rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr publishedPath;
+
+    // timer
+    rclcpp::TimerBase::SharedPtr planningTimer;
+
+    // objects
+    nav_msgs::msg::OccupancyGrid map;
     geometry_msgs::msg::PointStamped latestGoal;
+    nav_msgs::msg::Odometry currentPose;
 
     // path message to be published
 
     nav_msgs::msg::Path pathMessage;
 
     bool hasNewGoal;
+
+    // callbacks + helpers
+    void mapCallback(const nav_msgs::msg::OccupancyGrid::SharedPtr msg);
+    void goalCallback(const geometry_msgs::msg::PointStamped::SharedPtr msg);
+    void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg);
+    void timerCallback();
+
+    bool atGoal();
+    void pathPlanner();
+    bool isBlockedCell(const CellIndex &idx, int gCols, int gRows);
+    double distance(const CellIndex &a, const CellIndex &b);
 };
 
 #endif 

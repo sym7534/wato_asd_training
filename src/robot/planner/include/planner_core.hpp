@@ -9,6 +9,7 @@ namespace robot
 class PlannerCore {
   public:
     explicit PlannerCore(const rclcpp::Logger& logger);
+    void initializePath();
 
   private:
     rclcpp::Logger logger_;
