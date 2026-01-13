@@ -4,6 +4,7 @@
 #include <chrono>
 #include <functional>
 #include <limits>
+#include <queue>
 #include <vector>
 
 #include <cmath>
@@ -104,7 +105,7 @@ bool PlannerNode::isBlockedCell(const CellIndex &idx, int gCols, int gRows)
     return true;
   }
 
-  return(map.data[index] > 10);
+  return(map.data[index] > 20);
   // TUNE THIS ^^^^
   // TO ADJUST OCCUPANCY VALUES THE ROBOT TREATS AS OBSTACLES
 }
@@ -155,7 +156,60 @@ void PlannerNode::pathPlanner()
 
   if (isBlockedCell(start, gCols, gRows))
   {
-    return;
+    // using bfs to move the start cell to somewhere else if the current cell is invalid
+    std::queue<CellIndex> bfsQueue;
+    std::vector<bool> visited(gCols * gRows, false);
+    int startIndex = static_cast<int>(start.y * gCols + start.x);
+
+    if (startIndex < 0 || startIndex >= gCols * gRows)
+    {
+      return;
+    }
+
+    bfsQueue.push(start);
+    visited[startIndex] = true;
+
+    const int dCol[8] = { -1, -1, -1,  0, 0, 1, 1, 1 };
+    const int dRow[8] = { -1,  0,  1, -1, 1,-1, 0, 1 };
+
+    bool foundFree = false;
+
+    while (!bfsQueue.empty())
+    {
+      CellIndex curr = bfsQueue.front();
+      bfsQueue.pop();
+
+      if (!isBlockedCell(curr, gCols, gRows))
+      {
+        start = curr;
+        foundFree = true;
+        break;
+      }
+
+      for (int i = 0; i < 8; i++)
+      {
+        CellIndex nb(curr.x + dCol[i], curr.y + dRow[i]);
+        int nbIndex = static_cast<int>(nb.y * gCols + nb.x);
+
+        if (nbIndex < 0 || nbIndex >= gCols * gRows)
+        {
+          continue;
+        }
+
+        if (visited[nbIndex])
+        {
+          continue;
+        }
+
+        visited[nbIndex] = true;
+        bfsQueue.push(nb);
+      }
+    }
+
+    if (!foundFree)
+    {
+      return;
+    }
   }
 
   CellIndex goal(goalCol, goalRow);

@@ -27,7 +27,7 @@ class ControlNode : public rclcpp::Node {
     bool hasPath;
     bool hasOdom;
 
-    // tunable params
+    // values
     double lookaheadDistance;
     double goalTolerance;
     double linearSpeed;

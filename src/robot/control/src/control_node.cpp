@@ -8,32 +8,20 @@ ControlNode::ControlNode() : Node("control")
   hasPath = false;
   hasOdom = false;
 
-  lookaheadDistance = 1.0;
-  goalTolerance = 0.2;
-  linearSpeed = 0.5;
+  lookaheadDistance = 1;
+  goalTolerance = 0.4;
+  linearSpeed = 1.5;
   angularKp = 2.0;
 
   // subscriptions
-  pathSub = this->create_subscription<nav_msgs::msg::Path>(
-    "/path",
-    10,
-    std::bind(&ControlNode::pathCallback, this, std::placeholders::_1)
-  );
-
-  odomSub = this->create_subscription<nav_msgs::msg::Odometry>(
-    "/odom/filtered",
-    10,
-    std::bind(&ControlNode::odomCallback, this, std::placeholders::_1)
-  );
+  pathSub = this->create_subscription<nav_msgs::msg::Path>("/path",10,std::bind(&ControlNode::pathCallback, this, std::placeholders::_1));
+  odomSub = this->create_subscription<nav_msgs::msg::Odometry>("/odom/filtered",10,std::bind(&ControlNode::odomCallback, this, std::placeholders::_1));
 
   // publisher
   cmdPub = this->create_publisher<geometry_msgs::msg::Twist>("/cmd_vel", 10);
 
   // timer for control loop
-  timer = this->create_wall_timer(
-    std::chrono::milliseconds(100),
-    std::bind(&ControlNode::timerCallback, this)
-  );
+  timer = this->create_wall_timer(std::chrono::milliseconds(100),std::bind(&ControlNode::timerCallback, this));
 }
 
 void ControlNode::pathCallback(const nav_msgs::msg::Path::SharedPtr msg)
@@ -86,7 +74,6 @@ void ControlNode::timerCallback()
     headingError += (2.0 * M_PI);
   }
 
-  // plain pure pursuit vibes
   cmd.linear.x = linearSpeed;
   cmd.angular.z = angularKp * headingError;
 
