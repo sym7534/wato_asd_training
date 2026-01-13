@@ -93,6 +93,7 @@ void MapMemoryCore::updateGlobalMap(const nav_msgs::msg::OccupancyGrid::SharedPt
       }
 
       // overwrite because local data is known
+      // ONLY IF CELL VALUE ISNT 0 OR -1 (DONT OVERRIDE PREVIOUS DATA WITH CELLS THAT AREN'T SEEN ANYMORE)
       if(cellValue != 0 && cellValue != -1)
       {
         globalMap->data[gRow * gCols + gCol] = cellValue;
