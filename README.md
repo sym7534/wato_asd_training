@@ -1,12 +1,26 @@
 # WATonomous ASD Admissions Assignment
+Created for WATonomous's ASD team.
 
-## Prerequisite Installation
-These steps are to setup the monorepo to work on your own PC. We utilize docker to enable ease of reproducibility and deployability.
+## Project Outline
+This project builds a simple autonomous navigation stack using ROS2:
+- Costmap node: takes lidar data and publishes a local occupancy grid.
+- Map memory node: fuses local costmaps with odometry into a global map.
+- Planner node: runs A* pathfinding on the global map to generate a path.
+- Control node: follows the path using a pure-pursuit controller.
 
-> Why docker? It's so that you don't need to download any coding libraries on your bare metal pc, saving headache :3
+## Planned Changes
+- Fix the visual "jittering" of costmap in 3D render
+- Optimize code
+- Adapt simulation and code to work with moving obstacles
+- Allow paths to be created with multiple goals
 
-1. This assignment is supported on Linux Ubuntu >= 22.04, Windows (WSL), and MacOS. This is standard practice that roboticists can't get around. To setup, you can either setup an [Ubuntu Virtual Machine](https://ubuntu.com/tutorials/how-to-run-ubuntu-desktop-on-a-virtual-machine-using-virtualbox#1-overview), setting up [WSL](https://learn.microsoft.com/en-us/windows/wsl/install), or setting up your computer to [dual boot](https://opensource.com/article/18/5/dual-boot-linux). You can find online resources for all three approaches.
-2. Once inside Linux, [Download Docker Engine using the `apt` repository](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository)
-3. You're all set! You can begin the assignment by visiting the WATonomous Wiki.
+## Demo
+Video: https://youtu.be/mIYiKe8uu4Q
 
-Link to Onboarding Assignment: https://wiki.watonomous.ca/
+## Usage
+1. Clone repository to WSL ubuntu environment
+2. cd ~/wato_asd_training, ./watod build, ./watod up
+3. Connect to localhost:20000 in Foxglove app
+4. Import a new Foxglove layout from config/wato_asd_training_foxglove_config .json
+5. Use publishing feature to control robot.
+
